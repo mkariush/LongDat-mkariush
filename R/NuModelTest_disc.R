@@ -76,7 +76,7 @@ NuModelTest_disc <- function(N, data_type, test_var, melt_data,
         } else if (data_type == "ordinal") {
           fmla2 <- as.formula(paste("as.factor(value) ~ (1| Individual) +",
                                     test_var))
-          m2 <- MASS::polr(fmla2, data = subdata, method = "logistic")
+          m2 <- ordinal::clmm(fmla2, data = subdata)
         }
 
         # Wald Chisq test
@@ -99,7 +99,11 @@ NuModelTest_disc <- function(N, data_type, test_var, melt_data,
         remove(ci_raw)
         ci_raw <- confint(pairs(m_means, adjust = "none",
                                 infer = c(TRUE, FALSE), reverse = FALSE))
-        ci <- cbind(ci_raw$lower.CL, ci_raw$upper.CL)
+        if(any(grepl("asymp", colnames (ci_raw)))) {
+          ci <- cbind(ci_raw$asymp.LCL, ci_raw$asymp.UCL)
+        } else {
+          ci <- cbind(ci_raw$lower.CL, ci_raw$upper.CL)
+        }
         if (nrow(ci) > 1) {
           if (any(apply(sign(ci), 1, sum, na.rm = TRUE) != 0)) {
             Ps_null_model[i, 2] <- "Good"
