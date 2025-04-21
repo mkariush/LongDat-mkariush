@@ -139,7 +139,7 @@ final_result_summarize_cont <- function(variable_col, N,
             # There are sel_fac, so decide the signal based on confound table
             subconfound <- as.data.frame(
               confound[str_which(string = confound$Feature,
-                                 pattern = as.character(variables[i])), ])
+                                 pattern = as.character(paste0("^", variables[i], "$"))), ])
             subconfound_columns <-
               subconfound[ , str_which(string = colnames(confound),
                                        pattern = "Covariate_type")]
