@@ -144,7 +144,7 @@ final_result_summarize_disc <- function(variable_col, N,
                   # based on confound table
             subconfound <- as.data.frame(
               confound[str_which(string = confound$Feature,
-                                 pattern = as.character(paste0("^", variables[i], "$"))), ])
+                                 pattern = as.character(paste0("^", stringr::str_replace_all(variables[i], "(\\[|\\])", "\\\\\\1"), "$"))), ])
             subconfound_columns <-
               subconfound[ , str_which(string = colnames(confound),
                                        pattern = "Covariate_type")]
